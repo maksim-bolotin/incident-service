@@ -20,7 +20,7 @@ class IncidentBase(BaseModel):
     """Базовые поля инцидента (общие для создания и ответа)"""
     text: str = Field(..., min_length=1, max_length=1000)
     description: str = Field(..., min_length=1)
-    sstatus: IncidentStatus = Field(default=IncidentStatus.NEW)
+    status: IncidentStatus = Field(default=IncidentStatus.NEW)
     source: str = Field(..., min_length=1, max_length=100)
 
 
