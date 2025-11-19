@@ -11,7 +11,7 @@ from app.schemas import IncidentCreate, IncidentUpdate, IncidentResponse
 
 app = FastAPI(
     title="Incident Management API",
-    version="1.0.0"
+    version="1.0.1"
 )
 
 # Создаём таблицы при запуске
