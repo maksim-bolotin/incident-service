@@ -8,10 +8,15 @@ from sqlalchemy.orm import Session
 from app.database import get_db, init_db
 from app.models import Incident
 from app.schemas import IncidentCreate, IncidentUpdate, IncidentResponse
+from app.tasks import (
+    send_email_notification,
+    send_telegram_notification,
+    update_incident_statistics
+)
 
 app = FastAPI(
     title="Incident Management API",
-    version="1.0.0"
+    version="1.0.2"
 )
 
 # Создаём таблицы при запуске
@@ -25,6 +30,12 @@ def create_incident(incident: IncidentCreate, db: Session = Depends(get_db)):
     db.add(db_incident)
     db.commit()
     db.refresh(db_incident)
+
+    # Запускаем фоновые задачи асинхронно
+    send_email_notification.delay(db_incident.id, db_incident.text)
+    send_telegram_notification.delay(db_incident.id, db_incident.text)
+    update_incident_statistics.delay()
+
     return db_incident
 
 
